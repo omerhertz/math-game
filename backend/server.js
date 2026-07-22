@@ -76,6 +76,14 @@ function generateProblem(stage) {
     5: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   };
 
+  const newMultipliers = {
+    1: [0, 1, 2],
+    2: [3, 4],
+    3: [5, 6],
+    4: [7, 8],
+    5: [9, 10]
+  };
+
   const stageDivisors = {
     6: [1, 2],
     7: [1, 2, 3, 4],
@@ -84,10 +92,20 @@ function generateProblem(stage) {
     10: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   };
 
+  const newDivisors = {
+    6: [1, 2],
+    7: [3, 4],
+    8: [5, 6],
+    9: [7, 8],
+    10: [9, 10]
+  };
+
   if (stage <= 5) {
-    // Multiplication
-    const allowed = stageMultipliers[stage];
-    num1 = getRandomFromList(allowed);
+    // Multiplication (60% chance to select from newly added numbers)
+    const useNewNumbers = Math.random() < 0.6;
+    const pool = useNewNumbers ? newMultipliers[stage] : stageMultipliers[stage];
+    
+    num1 = getRandomFromList(pool);
     num2 = getRandomInt(0, 10);
     
     // Randomize order
@@ -96,9 +114,11 @@ function generateProblem(stage) {
     question = `${num1} × ${num2}`;
     answer = num1 * num2;
   } else {
-    // Division (result must be integer, dividend <= 100)
-    const allowedDivisors = stageDivisors[stage];
-    const divisor = getRandomFromList(allowedDivisors);
+    // Division (60% chance to select from newly added divisors)
+    const useNewNumbers = Math.random() < 0.6;
+    const pool = useNewNumbers ? newDivisors[stage] : stageDivisors[stage];
+
+    const divisor = getRandomFromList(pool);
     
     // Find valid max multiplier so dividend <= 100
     const maxMultiplier = Math.floor(100 / divisor);
